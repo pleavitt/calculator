@@ -1,0 +1,109 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.calculator {
+  display: grid;
+  grid-template-columns: repeat(4, 50px);
+  grid-template-rows: 50px 50px 50px 50px 50px 50px 50px 50px 50px;
+  grid-gap: 2px;
+  grid-template-areas: "d d d d" "d d d d" "d d d d" "b c p q" "i l n m" "j k w s" "t y u a" "z x h e" "f o v e";
+}
+
+.display {
+  grid-area: d;
+}
+
+.one {
+  grid-area: z;
+}
+
+.two {
+  grid-area: x;
+}
+
+.three {
+  grid-area: h;
+}
+
+.four {
+  grid-area: t;
+}
+
+.five {
+  grid-area: y;
+}
+
+.six {
+  grid-area: u;
+}
+
+.seven {
+  grid-area: j;
+}
+
+.eight {
+  grid-area: k;
+}
+
+.nine {
+  grid-area: w;
+}
+
+.zero {
+  grid-area: o;
+}
+
+.backspace {
+  grid-area: b;
+}
+
+.clear {
+  grid-area: c;
+}
+
+.power {
+  grid-area: p;
+}
+
+.quotient {
+  grid-area: q;
+}
+
+.pi {
+  grid-area: i;
+}
+
+.log {
+  grid-area: l;
+}
+
+.logNatural {
+  grid-area: n;
+}
+
+.multiply {
+  grid-area: m;
+}
+
+.subtract {
+  grid-area: s;
+}
+
+.add {
+  grid-area: a;
+}
+
+.equals {
+  grid-area: e;
+}
+
+.decimal {
+  grid-area: f;
+}
+
+.empty {
+  grid-area: v;
+}
