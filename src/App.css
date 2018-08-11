@@ -7,14 +7,15 @@
 
 .calculator {
   display: grid;
-  grid-template-columns: repeat(4, 50px);
-  grid-template-rows: 50px 50px 50px 50px 50px 50px 50px 50px 50px;
+  grid-template-columns: repeat(5, 50px);
+  grid-template-rows: 50px 50px 50px 50px 50px 50px 50px 50px;
   grid-gap: 2px;
-  grid-template-areas: "d d d d" "d d d d" "d d d d" "b c p q" "i l n m" "j k w s" "t y u a" "z x h e" "f o v e";
+  grid-template-areas: "d d d d d" "d d d d d" "d d d d d" "p b c i q " "r j k w m" "l t y u s" "n z x h a" "f o v e e"
 }
 
 .display {
   grid-area: d;
+  text-align: right;
 }
 
 .one {
@@ -69,7 +70,7 @@
   grid-area: p;
 }
 
-.quotient {
+.divide {
   grid-area: q;
 }
 
@@ -107,4 +108,12 @@
 
 .empty {
   grid-area: v;
+}
+
+.sqRt {
+  grid-area: r;
+}
+
+.input {
+  text-align: right;
 }

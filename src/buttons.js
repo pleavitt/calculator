@@ -5,15 +5,15 @@ export const opButtons = [
   },
   {
     text: '/',
-    gridClass: 'quotient',
+    gridClass: 'divide',
   },
   {
-    text: 'log 10',
-    gridClass: 'log',
+    text: 'log',
+    gridClass: 'log10',
   },
   {
-    text: 'log n',
-    gridClass: 'logNatural',
+    text: 'ln',
+    gridClass: 'ln',
   },
   {
     text: '*',
@@ -28,8 +28,16 @@ export const opButtons = [
     gridClass: 'add',
   },
   {
+    text: 'sqrt',
+    gridClass: 'square_root',
+  },
+  {
     text: '=',
     gridClass: 'equals',
+  },
+  {
+    text: 'pi',
+    gridClass: 'pi',
   },
 ];
 
@@ -42,11 +50,6 @@ export const inputButtons = [
     text: 'C',
     gridClass: 'clear',
   },
-  {
-    text: 'pi',
-    gridClass: 'pi',
-  },
-
   {
     text: '7',
     gridClass: 'seven',
