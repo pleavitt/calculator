@@ -1,101 +1,103 @@
 import React, { Component } from 'react';
+import { inputButtons, opButtons } from './buttons';
+
 import './App.css';
 
 class App extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      display: 0,
+      operation: '',
+      left: 0,
+      right: 0,
+      isLastActionOperation: false,
+    };
 
-    this.handleClick = this.handleClick.bind(this);
+    this.handleInputClick = this.handleInputClick.bind(this);
+    this.handleOpClick = this.handleOpClick.bind(this);
   }
 
-  handleClick(event) {
-    console.log(this);
-    console.log(event.target.innerHTML);
+  handleInputClick(event) {
+    const { display, isLastActionOperation, right } = this.state;
+    this.setState({
+      isLastActionOperation: false,
+    });
 
-    event.preventDefault();
+    this.setState({
+      display: display > 0 ? display + event.target.innerHTML : event.target.innerHTML,
+      right: isLastActionOperation ? event.target.innerHTML : right + event.target.innerHTML,
+    });
+  }
+
+  handleOpClick(event) {
+    const { operation, left, right, display, isLastActionOperation } = this.state;
+    if (operation !== '' && !isLastActionOperation) {
+      this.setState({
+        right: display,
+      });
+      console.log(this.state);
+      this.callMathApi(operation, left, right);
+    }
+    this.setState({
+      operation: event.target.className,
+      left: display > 0 ? display : left,
+      right: display > 0 ? left : display,
+      display: event.target.innerHTML,
+    });
+    this.setState({
+      isLastActionOperation: true,
+    });
+  }
+
+  callMathApi(operator, param1, param2) {
+    console.log(`Calling API: ${param1} ${operator} ${param2}`);
+    fetch(`http://localhost:8080/${operator}?op1=${param1}&op2=${param2}`)
+      .then(res => res.json())
+      .then(
+        result => {
+          this.setState({
+            display: result.result,
+            left: result.result,
+          });
+        },
+        error => {
+          console.log(error);
+        }
+      );
   }
 
   render() {
+    const renderedInputButtons = inputButtons.map(b => (
+      <button
+        className={b.gridClass}
+        key={b.text}
+        text={b.text}
+        type="button"
+        onClick={this.handleInputClick}
+      >
+        {b.text}
+      </button>
+    ));
+
+    const renderedOpButtons = opButtons.map(b => (
+      <button
+        className={b.gridClass}
+        key={b.text}
+        text={b.text}
+        type="button"
+        onClick={this.handleOpClick}
+      >
+        {b.text}
+      </button>
+    ));
+
     return (
       <div className="container">
         <div className="calculator">
-          <input type="text" disabled className="display" />
-
-          <button type="button" className="one" onClick={this.handleClick}>
-            1
-          </button>
-
-          <button type="button" className="three" onClick={this.handleClick}>
-            3
-          </button>
-          <button type="button" className="four" onClick={this.handleClick}>
-            4
-          </button>
-          <button type="button" className="five" onClick={this.handleClick}>
-            5
-          </button>
-          <button type="button" className="six" onClick={this.handleClick}>
-            6
-          </button>
-          <button type="button" className="seven" onClick={this.handleClick}>
-            7
-          </button>
-          <button type="button" className="eight" onClick={this.handleClick}>
-            8
-          </button>
-          <button type="button" className="nine" onClick={this.handleClick}>
-            9
-          </button>
-          <button type="button" className="zero" onClick={this.handleClick}>
-            0
-          </button>
-          <button type="button" className="backspace" onClick={this.handleClick}>
-            BS
-          </button>
-          <button type="button" className="clear" onClick={this.handleClick}>
-            C
-          </button>
-          <button type="button" className="two" onClick={this.handleClick}>
-            2
-          </button>
-          <button type="button" className="power" onClick={this.handleClick}>
-            power
-          </button>
-          <button type="button" className="quotient" onClick={this.handleClick}>
-            /
-          </button>
-          <button type="button" className="clear" onClick={this.handleClick}>
-            C
-          </button>
-
-          <button type="button" className="pi" onClick={this.handleClick}>
-            pi
-          </button>
-          <button type="button" className="log" onClick={this.handleClick}>
-            log 10
-          </button>
-          <button type="button" className="logNatural" onClick={this.handleClick}>
-            log n
-          </button>
-          <button type="button" className="multiply" onClick={this.handleClick}>
-            *
-          </button>
-
-          <button type="button" className="subtract" onClick={this.handleClick}>
-            -
-          </button>
-          <button type="button" className="add" onClick={this.handleClick}>
-            +
-          </button>
-
-          <button type="button" className="equals" onClick={this.handleClick}>
-            =
-          </button>
-
-          <button type="button" className="decimal" onClick={this.handleClick}>
-            <b>.</b>
-          </button>
-          <button type="button" className="empty" />
+          <input type="text" value={this.state.display} disabled className="display" />
+          {renderedInputButtons}
+          {renderedOpButtons}
         </div>
       </div>
     );
