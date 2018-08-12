@@ -131,9 +131,7 @@ class App extends Component {
 
   callMathApi(operator, param1, param2) {
     const { left } = this.state;
-    fetch(
-      `http://mathapi-env-1.bpf2sp92sc.ap-southeast-2.elasticbeanstalk.com/${operator}?op1=${param1}&op2=${param2}`
-    )
+    fetch(`https://arcane-beyond-77883.herokuapp.com/${operator}?op1=${param1}&op2=${param2}`)
       .then(res => res.json())
       .then(
         result => {
