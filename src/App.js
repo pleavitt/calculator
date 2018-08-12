@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { inputButtons, opButtons } from './buttons';
 
 import './App.css';
+import './css/mystyles.css';
 
 class App extends Component {
   constructor(props) {
@@ -31,9 +32,10 @@ class App extends Component {
   }
 
   handleInputClick(event) {
-    const { display, isLastActionOp, isDisplayInput, lastOpWasEquals } = this.state;
-    // if display ends in a . or last operation was =
-    if ((!isDisplayInput && lastOpWasEquals) || event.target.className === 'clear') {
+    const { display, isLastActionOp, isDisplayInput, lastOpWasEquals, error } = this.state;
+
+    // if error, api result and equals pressed, clear button then clear everything
+    if ((!isDisplayInput && lastOpWasEquals) || event.target.id === 'clear' || error !== '') {
       this.setState({
         display: 0,
         operation: '',
@@ -42,12 +44,15 @@ class App extends Component {
         isLastActionOp: false,
         isDisplayInput: true,
         callApi: false,
+        error: '',
       });
     }
     // if last is not a decimal or button pressed is not a decimal AND its not the clear command
     if (
       (display[display.length - 1] !== '.' || event.target.innerHTML !== '.') &&
-      event.target.className !== 'clear'
+      event.target.id !== 'clear' &&
+      event.target.id !== 'backspace' &&
+      event.target.id !== 'negate'
     ) {
       this.setState({
         display:
@@ -57,11 +62,29 @@ class App extends Component {
         isLastActionOp: false,
         isDisplayInput: true,
       });
+    } else if (
+      (event.target.id === 'negate' || event.target.id === 'backspace') &&
+      display !== 0 &&
+      display[display.length - 1] !== '.'
+    ) {
+      if (event.target.id === 'negate') {
+        this.setState({
+          display: display * -1,
+          isLastActionOp: false,
+          isDisplayInput: true,
+        });
+      } else if (event.target.id === 'backspace' && !isLastActionOp) {
+        this.setState({
+          display: display.length === 1 ? 0 : display.slice(0, -1),
+          isLastActionOp: false,
+          isDisplayInput: true,
+        });
+      }
     }
   }
 
   handleOpClick(event) {
-    const { operation, left, right, display, isLastActionOp, isDisplayInput } = this.state;
+    const { operation, left, right, display, isLastActionOp, isDisplayInput, error } = this.state;
 
     if (
       event.target.innerHTML === 'log' ||
@@ -69,10 +92,10 @@ class App extends Component {
       event.target.innerHTML === 'pi'
     ) {
       this.setState({
-        operation: event.target.className,
-        left: display,
+        operation: event.target.id,
+        left: display > 0 ? display : left,
         right: null,
-        callApi: true,
+        callApi: error === '',
       });
     } else if (!isLastActionOp || (event.target.innerHTML === '=' && right !== null)) {
       if (left === null || !isDisplayInput) {
@@ -88,71 +111,58 @@ class App extends Component {
 
       if (event.target.innerHTML !== '=') {
         this.setState({
-          operation: event.target.className,
+          operation: event.target.id,
           display: event.target.innerHTML,
         });
       }
       if (operation !== '') {
         this.setState({
-          callApi: true,
+          callApi: error === '',
         });
       }
     }
 
     this.setState({
       isLastActionOp: true,
-      operation: event.target.innerHTML.includes('=') ? operation : event.target.className,
+      operation: event.target.innerHTML.includes('=') ? operation : event.target.id,
       lastOpWasEquals: event.target.innerHTML === '=',
     });
-    // if ((operation !== '' && !isLastActionOp) || event.target.innerHTML === '=') {
-    //   console.log('pushing to right');
-
-    //   this.setState({
-    //     right: isDisplayInput && event.target.innerHTML !== '=' ? display : right,
-    //   });
-    //   console.log(this.state);
-    //   this.callMathApi(operation, left, right);
-    // }
-    // if (event.target.innerHTML !== '=') {
-    //   this.setState({
-    //     operation: event.target.className,
-    //     left: display > 0 ? display : left,
-    //     right: display > 0 ? left : display,
-    //   });
-
-    //   this.setState({
-    //     isLastActionOp: true,
-    //   });
-    // }
   }
 
   callMathApi(operator, param1, param2) {
-    const { left, display } = this.state;
-    console.log(`Calling API: ${param1} ${operator} ${param2}`);
-    fetch(`http://localhost:8080/${operator}?op1=${param1}&op2=${param2}`)
+    const { left } = this.state;
+    fetch(
+      `http://mathapi-env-1.bpf2sp92sc.ap-southeast-2.elasticbeanstalk.com/${operator}?op1=${param1}&op2=${param2}`
+    )
       .then(res => res.json())
       .then(
         result => {
           this.setState({
             display:
-              result.result === 'NaN' || result.result === '-Infinity' ? display : result.result,
-            left: result.result === 'NaN' || result.result === '-Infinity' ? left : result.result,
+              typeof result.result !== 'number' ? `Api Error (${result.result})` : result.result,
+            left: typeof result.result !== 'number' ? left : result.result,
             isDisplayInput: false,
             callApi: false,
-            error: result.result === 'NaN' || result.result === '-Infinity' ? result.result : '',
+            error: typeof result.result !== 'number' ? result.result : '',
           });
         },
         error => {
-          console.log(error);
+          this.setState({
+            isDisplayInput: false,
+            callApi: false,
+            display: error,
+            error,
+          });
         }
       );
   }
 
   render() {
-    const { display } = this.state;
+    const { display, error } = this.state;
     const renderedInputButtons = inputButtons.map(b => (
       <button
-        className={b.gridClass}
+        id={b.gridClass}
+        className={`${b.isNumber ? 'is-link' : 'is-info'} ${b.cssClass} button is-rounded`}
         key={b.text}
         text={b.text}
         type="button"
@@ -164,7 +174,8 @@ class App extends Component {
 
     const renderedOpButtons = opButtons.map(b => (
       <button
-        className={b.gridClass}
+        id={b.gridClass}
+        className={`${b.isNumber ? 'is-link' : 'is-info'} ${b.cssClass} button is-rounded`}
         key={b.text}
         text={b.text}
         type="button"
@@ -176,10 +187,17 @@ class App extends Component {
 
     return (
       <div className="container">
-        <div className="calculator">
-          <input type="text" value={display} disabled className="display" />
-          {renderedInputButtons}
-          {renderedOpButtons}
+        <div className="box">
+          <div className="calculator">
+            <input
+              type="text"
+              value={display}
+              readOnly
+              className={`${error === '' ? '' : 'error'} display input is-large is-rounded`}
+            />
+            {renderedInputButtons}
+            {renderedOpButtons}
+          </div>
         </div>
       </div>
     );

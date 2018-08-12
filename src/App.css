@@ -2,118 +2,194 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 20px;
+  padding-top: 150px;
 }
 
 .calculator {
   display: grid;
   grid-template-columns: repeat(5, 50px);
-  grid-template-rows: 50px 50px 50px 50px 50px 50px 50px 50px;
-  grid-gap: 2px;
-  grid-template-areas: "d d d d d" "d d d d d" "d d d d d" "p b c i q " "r j k w m" "l t y u s" "n z x h a" "f o v e e"
+  grid-template-rows: 50px 50px 50px 50px 50px 50px;
+  grid-gap: 20px;
+  grid-template-areas: "display display display display display" " backspace clear pi divide multiply" "power seven eight nine subtract" "square_root four five six add" "log10 one two three equals" "ln decimal zero negate equals"
+}
+
+.box {
+  box-shadow: 0px 3px 15px rgba(163, 92, 92, 0.2);
+}
+
+@keyframes glowing {
+  0% {
+    box-shadow: 0 0 -10px #ff0011;
+  }
+  40% {
+    box-shadow: 0 0 8px #ff0011;
+  }
+  60% {
+    box-shadow: 0 0 8px #ff0011;
+  }
+  100% {
+    box-shadow: 0 0 -10px #ff0011;
+  }
+}
+
+.error {
+  animation: glowing 3s;
+  animation-iteration-count: 3;
+}
+
+.bold {
+  font-weight: bolder;
 }
 
 .display {
-  grid-area: d;
+  padding-bottom: 30px;
+  grid-area: display;
   text-align: right;
+  vertical-align: bottom;
+  background-color: lightgray;
 }
 
-.one {
-  grid-area: z;
+#one {
+  grid-area: one;
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
 }
 
-.two {
-  grid-area: x;
+#two {
+  grid-area: two;
+  width: 100%;
+  height: 100%;
 }
 
-.three {
-  grid-area: h;
+#three {
+  grid-area: three;
+  width: 100%;
+  height: 100%;
 }
 
-.four {
-  grid-area: t;
+#four {
+  grid-area: four;
+  width: 100%;
+  height: 100%;
 }
 
-.five {
-  grid-area: y;
+#five {
+  grid-area: five;
+  width: 100%;
+  height: 100%;
 }
 
-.six {
-  grid-area: u;
+#six {
+  grid-area: six;
+  width: 100%;
+  height: 100%;
 }
 
-.seven {
-  grid-area: j;
+#seven {
+  grid-area: seven;
+  width: 100%;
+  height: 100%;
 }
 
-.eight {
-  grid-area: k;
+#eight {
+  grid-area: eight;
+  width: 100%;
+  height: 100%;
 }
 
-.nine {
-  grid-area: w;
+#nine {
+  grid-area: nine;
+  width: 100%;
+  height: 100%;
 }
 
-.zero {
-  grid-area: o;
+#zero {
+  grid-area: zero;
+  width: 100%;
+  height: 100%;
 }
 
-.backspace {
-  grid-area: b;
+#backspace {
+  grid-area: backspace;
+  width: 100%;
+  height: 100%;
 }
 
-.clear {
-  grid-area: c;
+#clear {
+  grid-area: clear;
+  width: 100%;
+  height: 100%;
 }
 
-.power {
-  grid-area: p;
+#power {
+  grid-area: power;
+  width: 100%;
+  height: 100%;
 }
 
-.divide {
-  grid-area: q;
+#divide {
+  grid-area: divide;
+  width: 100%;
+  height: 100%;
 }
 
-.pi {
-  grid-area: i;
+#pi {
+  grid-area: pi;
+  width: 100%;
+  height: 100%;
 }
 
-.log {
-  grid-area: l;
+#log10 {
+  grid-area: log10;
+  width: 100%;
+  height: 100%;
 }
 
-.logNatural {
-  grid-area: n;
+#ln {
+  grid-area: ln;
+  width: 100%;
+  height: 100%;
 }
 
-.multiply {
-  grid-area: m;
+#multiply {
+  grid-area: multiply;
+  width: 100%;
+  height: 100%;
 }
 
-.subtract {
-  grid-area: s;
+#subtract {
+  grid-area: subtract;
+  width: 100%;
+  height: 100%;
 }
 
-.add {
-  grid-area: a;
+#add {
+  grid-area: add;
+  width: 100%;
+  height: 100%;
 }
 
-.equals {
-  grid-area: e;
+#equals {
+  grid-area: equals;
+  width: 100%;
+  height: 100%;
 }
 
-.decimal {
-  grid-area: f;
+#decimal {
+  grid-area: decimal;
+  width: 100%;
+  height: 100%;
 }
 
-.empty {
-  grid-area: v;
+#negate {
+  grid-area: negate;
+  width: 100%;
+  height: 100%;
 }
 
-.sqRt {
-  grid-area: r;
-}
-
-.input {
-  text-align: right;
+#square_root {
+  grid-area: square_root;
+  width: 100%;
+  height: 100%;
 }
