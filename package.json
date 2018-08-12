@@ -1,7 +1,11 @@
 {
-  "name": "calculator",
-  "version": "0.1.0",
-  "private": true,
+  "name": "pleavitt_calculator",
+  "version": "1.0.0",
+  "description": "Test for Prospective Employer",
+  "main": "index.js",
+  "author": "Paul Leavitt",
+  "license": "ISC",
+  "homepage": "http://pleavitt.github.io/calculator",
   "dependencies": {
     "bulma": "^0.7.1",
     "bulma-extensions": "^2.2.1",
