@@ -23,3 +23,4 @@ This app was built for the primary purpose as a for a prospective employer.
 - Update UI to look similar to a calculator application you find on smartphones.
 - Create unit tests
 - Accept keyboard input
+- Add loading notification while wating for api response
