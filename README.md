@@ -21,3 +21,4 @@ This app was built for the primary purpose as a for a prospective employer.
 
 - Separate application up into multiple components.
 - Update UI to look similar to calculator application you find on smartphones.
+- Create unit tests
