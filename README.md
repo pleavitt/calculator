@@ -1,6 +1,6 @@
 # Calculator
 
-A React application that consumes data from an AWS REST api. This calculator is designed to mimick that of a calculator that you would pay $10 for at the supermarket
+A React application that consumes data from a REST api. This calculator is designed to mimick that of a calculator that you would pay $10 for at the supermarket
 
 ## Demo
 Click [here](https://pleavitt.github.io/calculator/) for a demonstration of the application
