@@ -1,132 +1,165 @@
-export const opButtons = [
+export const buttonRow1 = [
   {
-    text: 'pwr',
-    gridClass: 'power',
+    text: 'BS',
+    id: 'backspace',
     cssClass: 'bold',
+    functionButton: false,
+  },
+  {
+    text: 'C',
+    id: 'clear',
+    cssClass: 'bold',
+    functionButton: false,
+  },
+  {
+    text: 'π',
+    id: 'pi',
+    cssClass: 'bold',
+    functionButton: true,
+  },
+
+  {
+    text: '',
+    functionButton: false,
+    disabled: true,
   },
 
   {
     text: '/',
-    gridClass: 'divide',
+    id: 'divide',
     cssClass: 'bold',
+    functionButton: true,
   },
+];
 
+export const buttonRow2 = [
   {
-    text: 'log',
-    gridClass: 'log10',
+    text: '<i>x<sup><span className="exponent">y</span></sup></i>',
+    id: 'power',
     cssClass: 'bold',
+    functionButton: true,
   },
-
   {
-    text: 'ln',
-    gridClass: 'ln',
-    cssClass: 'bold',
+    text: '7',
+    id: 'seven',
+    isNumber: true,
+    functionButton: false,
   },
-
+  {
+    text: '8',
+    id: 'eight',
+    isNumber: true,
+    functionButton: false,
+  },
+  {
+    text: '9',
+    id: 'nine',
+    isNumber: true,
+    functionButton: false,
+  },
   {
     text: 'x',
-    gridClass: 'multiply',
+    id: 'multiply',
     cssClass: 'bold',
+    functionButton: true,
+  },
+];
+
+export const buttonRow3 = [
+  {
+    text: '<sup><i>y</i></sup>√<span className="sqrt"><i>x</i></span>',
+    id: 'square_root',
+    cssClass: 'bold',
+    functionButton: true,
+  },
+  {
+    text: '4',
+    id: 'four',
+    isNumber: true,
+    functionButton: false,
+  },
+  {
+    text: '5',
+    id: 'five',
+    isNumber: true,
+    functionButton: false,
+  },
+  {
+    text: '6',
+    id: 'six',
+    isNumber: true,
+    functionButton: false,
   },
 
   {
     text: '-',
-    gridClass: 'subtract',
+    id: 'subtract',
     cssClass: 'bold',
-  },
-
-  {
-    text: '+',
-    gridClass: 'add',
-    cssClass: 'bold',
-  },
-
-  {
-    text: 'sqrt',
-    gridClass: 'square_root',
-    cssClass: 'bold',
-  },
-
-  {
-    text: '=',
-    gridClass: 'equals',
-    cssClass: 'bold',
-  },
-
-  {
-    text: 'pi',
-    gridClass: 'pi',
-    cssClass: 'bold',
+    functionButton: true,
   },
 ];
 
-export const inputButtons = [
+export const buttonRow4 = [
   {
-    text: 'BS',
-    gridClass: 'backspace',
+    text: 'log',
+    id: 'log10',
     cssClass: 'bold',
-  },
-  {
-    text: 'C',
-    gridClass: 'clear',
-    cssClass: 'bold',
-  },
-  {
-    text: '7',
-    gridClass: 'seven',
-    isNumber: true,
-  },
-  {
-    text: '8',
-    gridClass: 'eight',
-    isNumber: true,
-  },
-  {
-    text: '9',
-    gridClass: 'nine',
-    isNumber: true,
-  },
-  {
-    text: '4',
-    gridClass: 'four',
-    isNumber: true,
-  },
-  {
-    text: '5',
-    gridClass: 'five',
-    isNumber: true,
-  },
-  {
-    text: '6',
-    gridClass: 'six',
-    isNumber: true,
+    functionButton: true,
   },
   {
     text: '1',
-    gridClass: 'one',
+    id: 'one',
     isNumber: true,
+    functionButton: false,
   },
   {
     text: '2',
-    gridClass: 'two',
+    id: 'two',
     isNumber: true,
+    functionButton: false,
   },
   {
     text: '3',
-    gridClass: 'three',
+    id: 'three',
     isNumber: true,
+    functionButton: false,
   },
   {
+    text: '+',
+    id: 'add',
+    cssClass: 'bold',
+    functionButton: true,
+  },
+];
+
+export const buttonRow5 = [
+  {
+    text: 'ln',
+    id: 'ln',
+    cssClass: 'bold',
+    functionButton: true,
+  },
+
+  {
     text: '.',
-    gridClass: 'decimal',
+    id: 'decimal',
+    functionButton: false,
   },
   {
     text: '0',
-    gridClass: 'zero',
+    id: 'zero',
     isNumber: true,
+    functionButton: false,
   },
   {
-    text: '-/+',
-    gridClass: 'negate',
+    text: '±',
+    id: 'negate',
+    functionButton: false,
+  },
+  {
+    text: '=',
+    id: 'equals',
+    cssClass: 'bold',
+    functionButton: true,
   },
 ];

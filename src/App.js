@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
-import { inputButtons, opButtons } from './buttons';
+import { buttonRow1, buttonRow2, buttonRow3, buttonRow4, buttonRow5 } from './buttons';
 
 import './App.css';
-import './css/mystyles.css';
+
+const Display = props => (
+  <div className="lcd">
+    <div className="result">{props.display}</div>
+  </div>
+);
 
 class App extends Component {
   constructor(props) {
@@ -73,7 +78,7 @@ class App extends Component {
           isLastActionOp: false,
           isDisplayInput: true,
         });
-      } else if (event.target.id === 'backspace' && !isLastActionOp) {
+      } else if (event.target.id === 'backspace' && !isLastActionOp && isDisplayInput) {
         this.setState({
           display: display.length === 1 ? 0 : display.slice(0, -1),
           isLastActionOp: false,
@@ -86,11 +91,7 @@ class App extends Component {
   handleOpClick(event) {
     const { operation, left, right, display, isLastActionOp, isDisplayInput, error } = this.state;
 
-    if (
-      event.target.innerHTML === 'log' ||
-      event.target.innerHTML === 'ln' ||
-      event.target.innerHTML === 'pi'
-    ) {
+    if (event.target.id === 'log' || event.target.id === 'ln' || event.target.id === 'pi') {
       this.setState({
         operation: event.target.id,
         left: display > 0 ? display : left,
@@ -156,28 +157,67 @@ class App extends Component {
   }
 
   render() {
-    const { display, error } = this.state;
-    const renderedInputButtons = inputButtons.map(b => (
+    const { display } = this.state;
+
+    const rowOneButtons = buttonRow1.map(b => (
       <button
-        id={b.gridClass}
-        className={`${b.isNumber ? 'is-link' : 'is-info'} ${b.cssClass} button is-rounded`}
+        id={b.id}
+        className={`${b.isNumber ? 'number' : ''} ${b.cssClass}`}
         key={b.text}
         text={b.text}
+        disabled={b.disabled}
         type="button"
-        onClick={this.handleInputClick}
+        onClick={b.functionButton ? this.handleOpClick : this.handleInputClick}
       >
         {b.text}
       </button>
     ));
 
-    const renderedOpButtons = opButtons.map(b => (
+    const rowTwoButtons = buttonRow2.map(b => (
       <button
-        id={b.gridClass}
-        className={`${b.isNumber ? 'is-link' : 'is-info'} ${b.cssClass} button is-rounded`}
+        id={b.id}
+        className={`${b.isNumber ? 'number' : ''} ${b.cssClass}`}
         key={b.text}
         text={b.text}
         type="button"
-        onClick={this.handleOpClick}
+        onClick={b.functionButton ? this.handleOpClick : this.handleInputClick}
+        dangerouslySetInnerHTML={{ __html: b.text }}
+      />
+    ));
+
+    const rowThreeButtons = buttonRow3.map(b => (
+      <button
+        id={b.id}
+        className={`${b.isNumber ? 'number' : ''} ${b.cssClass}`}
+        key={b.text}
+        text={b.text}
+        type="button"
+        onClick={b.functionButton ? this.handleOpClick : this.handleInputClick}
+        dangerouslySetInnerHTML={{ __html: b.text }}
+      />
+    ));
+
+    const rowFourButtons = buttonRow4.map(b => (
+      <button
+        id={b.id}
+        className={`${b.isNumber ? 'number' : ''} ${b.cssClass}`}
+        key={b.text}
+        text={b.text}
+        type="button"
+        onClick={b.functionButton ? this.handleOpClick : this.handleInputClick}
+      >
+        {b.text}
+      </button>
+    ));
+
+    const rowFiveButtons = buttonRow5.map(b => (
+      <button
+        id={b.id}
+        className={`${b.isNumber ? 'number' : ''} ${b.cssClass}`}
+        key={b.text}
+        text={b.text}
+        type="button"
+        onClick={b.functionButton ? this.handleOpClick : this.handleInputClick}
       >
         {b.text}
       </button>
@@ -185,17 +225,13 @@ class App extends Component {
 
     return (
       <div className="container">
-        <div className="box">
-          <div className="calculator">
-            <input
-              type="text"
-              value={display}
-              readOnly
-              className={`${error === '' ? '' : 'error'} display input is-large is-rounded`}
-            />
-            {renderedInputButtons}
-            {renderedOpButtons}
-          </div>
+        <div className="calculator">
+          <Display display={display} />
+          <div className="buttonRow">{rowOneButtons}</div>
+          <div className="buttonRow">{rowTwoButtons}</div>
+          <div className="buttonRow">{rowThreeButtons}</div>
+          <div className="buttonRow">{rowFourButtons}</div>
+          <div className="buttonRow">{rowFiveButtons}</div>
         </div>
       </div>
     );
