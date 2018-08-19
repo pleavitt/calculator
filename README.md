@@ -1,13 +1,12 @@
 # Calculator
 
-A React application that consumes data from a REST api. This calculator is designed to mimick that of a calculator that you would pay $10 for at the supermarket
+A React application that consumes data from a REST api. This calculator is designed to mimick that of a calculator app that you have on your mobile phone
 
 ## Demo
 Click [here](https://pleavitt.github.io/calculator/) for a demonstration of the application
 
 ## Tech
 * React
-* Bulma CSS Framework
 
 ## Purpose of this application
 
@@ -15,12 +14,12 @@ This app was built for the primary purpose as a for a prospective employer.
 
 ## Known bugs
 
-- Does not work with Latest version of IE - Windows 10.  This is due to lack of IE compatibility with css grid.
+- Log function sometimes behaves unexpectedly
 
 ## TODO
-
-- Separate application up into multiple components.
-- Update UI to look similar to a calculator application you find on smartphones.
+- Separate application into multiple components.
 - Create unit tests
 - Accept keyboard input
 - Add loading notification while wating for api response
+- Remove unused modules
+- Change BS to the backspace icon
