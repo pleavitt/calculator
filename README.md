@@ -22,3 +22,4 @@ This app was built for the primary purpose as a for a prospective employer.
 - Accept keyboard input
 - Add loading notification while wating for api response
 - Remove unused modules
+- Change BS to the backspace icon
