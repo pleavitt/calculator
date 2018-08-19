@@ -7,7 +7,6 @@ Click [here](https://pleavitt.github.io/calculator/) for a demonstration of the 
 
 ## Tech
 * React
-* Bulma CSS Framework
 
 ## Purpose of this application
 
@@ -15,12 +14,11 @@ This app was built for the primary purpose as a for a prospective employer.
 
 ## Known bugs
 
-- Does not work with Latest version of IE - Windows 10.  This is due to lack of IE compatibility with css grid.
+- Log function sometimes behaves unexpectedly
 
 ## TODO
-
-- Separate application up into multiple components.
-- Update UI to look similar to a calculator application you find on smartphones.
+- Separate application into multiple components.
 - Create unit tests
 - Accept keyboard input
 - Add loading notification while wating for api response
+- Remove unused modules
