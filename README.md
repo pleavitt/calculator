@@ -14,12 +14,11 @@ This app was built for the primary purpose as a for a prospective employer.
 
 ## Known bugs
 
-- Log function sometimes behaves unexpectedly
+- Doing operations using the result of a log operation results in unexpected behaviour.
 
 ## TODO
 - Separate application into multiple components.
 - Create unit tests
 - Accept keyboard input
 - Add loading notification while wating for api response
-- Remove unused modules
 - Change BS to the backspace icon
