@@ -12,6 +12,11 @@ Click [here](https://pleavitt.github.io/calculator/) for a demonstration of the 
 
 This app was built for the primary purpose as a for a prospective employer.
 
+## Installation
+
+* yarn install
+* yarn start
+
 ## Known bugs
 
 - Doing operations using the result of a log operation results in unexpected behaviour.
