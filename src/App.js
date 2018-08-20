@@ -17,15 +17,15 @@ class App extends Component {
       operation: '',
       left: null,
       right: null,
-      isLastActionOp: false,
-      isDisplayInput: true,
+      operationButtonPressedLast: false,
+      isDisplayUserInput: true,
       callApi: false,
-      lastOpWasEquals: false,
+      lastOperationEquals: false,
       error: '',
     };
 
-    this.handleInputClick = this.handleInputClick.bind(this);
-    this.handleOpClick = this.handleOpClick.bind(this);
+    this.handleNumberButtonClick = this.handleNumberButtonClick.bind(this);
+    this.handleOperationClick = this.handleOperationClick.bind(this);
   }
 
   componentDidUpdate() {
@@ -36,18 +36,29 @@ class App extends Component {
     }
   }
 
-  handleInputClick(event) {
-    const { display, isLastActionOp, isDisplayInput, lastOpWasEquals, error } = this.state;
+  handleNumberButtonClick(event) {
+    const {
+      display,
+      operationButtonPressedLast,
+      isDisplayUserInput,
+      lastOperationEquals,
+      error,
+    } = this.state;
 
     // if error, api result and equals pressed, clear button then clear everything
-    if ((!isDisplayInput && lastOpWasEquals) || event.target.id === 'clear' || error !== '') {
+    if (
+      (!isDisplayUserInput && lastOperationEquals) ||
+      event.target.id === 'clear' ||
+      error !== ''
+    ) {
       this.setState({
         display: 0,
         operation: '',
+        nextOperation: '',
         left: null,
         right: null,
-        isLastActionOp: false,
-        isDisplayInput: true,
+        operationButtonPressedLast: false,
+        isDisplayUserInput: true,
         callApi: false,
         error: '',
       });
@@ -61,11 +72,11 @@ class App extends Component {
     ) {
       this.setState({
         display:
-          (display > 0 || display[display.length - 1] === '.') && !isLastActionOp
+          (display > 0 || display[display.length - 1] === '.') && !operationButtonPressedLast
             ? display + event.target.innerHTML
             : event.target.innerHTML,
-        isLastActionOp: false,
-        isDisplayInput: true,
+        operationButtonPressedLast: false,
+        isDisplayUserInput: true,
       });
     } else if (
       (event.target.id === 'negate' || event.target.id === 'backspace') &&
@@ -75,36 +86,52 @@ class App extends Component {
       if (event.target.id === 'negate') {
         this.setState({
           display: display * -1,
-          isLastActionOp: false,
-          isDisplayInput: true,
+          operationButtonPressedLast: false,
+          isDisplayUserInput: true,
         });
-      } else if (event.target.id === 'backspace' && !isLastActionOp && isDisplayInput) {
+      } else if (
+        event.target.id === 'backspace' &&
+        !operationButtonPressedLast &&
+        isDisplayUserInput
+      ) {
         this.setState({
           display: display.length === 1 ? 0 : display.slice(0, -1),
-          isLastActionOp: false,
-          isDisplayInput: true,
+          operationButtonPressedLast: false,
+          isDisplayUserInput: true,
         });
       }
     }
   }
 
-  handleOpClick(event) {
-    const { operation, left, right, display, isLastActionOp, isDisplayInput, error } = this.state;
+  handleOperationClick(event) {
+    const {
+      operation,
+      left,
+      right,
+      display,
+      operationButtonPressedLast,
+      isDisplayUserInput,
+      error,
+      nextOperation,
+    } = this.state;
 
-    if (event.target.id === 'log' || event.target.id === 'ln' || event.target.id === 'pi') {
+    if (
+      (event.target.id === 'log10' || event.target.id === 'ln' || event.target.id === 'pi') &&
+      true
+    ) {
       this.setState({
         operation: event.target.id,
-        left: display > 0 ? display : left,
+        left: display > 0 ? display : 0,
         right: null,
         callApi: error === '',
       });
-    } else if (!isLastActionOp || (event.target.innerHTML === '=' && right !== null)) {
-      if (left === null || !isDisplayInput) {
+    } else if (!operationButtonPressedLast || (event.target.innerHTML === '=' && right !== null)) {
+      if (left === null || !isDisplayUserInput) {
         this.setState({
           left: display,
           callApi: false,
         });
-      } else if (!isLastActionOp) {
+      } else if (!operationButtonPressedLast) {
         this.setState({
           right: display,
         });
@@ -112,7 +139,7 @@ class App extends Component {
 
       if (event.target.innerHTML !== '=') {
         this.setState({
-          operation: event.target.id,
+          operation: operation === '' ? event.target.id : operation,
           display: event.target.innerHTML,
         });
       }
@@ -124,15 +151,15 @@ class App extends Component {
     }
 
     this.setState({
-      isLastActionOp: true,
-      operation: event.target.innerHTML.includes('=') ? operation : event.target.id,
-      lastOpWasEquals: event.target.innerHTML === '=',
+      operationButtonPressedLast: !event.target.innerHTML.includes('='),
+      nextOperation: operation !== '' ? event.target.id : nextOperation,
+      lastOperationEquals: event.target.innerHTML === '=',
     });
   }
 
-  callMathApi(operator, param1, param2) {
-    const { left } = this.state;
-    fetch(`https://arcane-beyond-77883.herokuapp.com/${operator}?op1=${param1}&op2=${param2}`)
+  callMathApi() {
+    const { left, operation, right, nextOperation } = this.state;
+    fetch(`https://arcane-beyond-77883.herokuapp.com/${operation}?op1=${left}&op2=${right}`)
       .then(res => res.json())
       .then(
         result => {
@@ -140,14 +167,15 @@ class App extends Component {
             display:
               typeof result.result !== 'number' ? `Api Error (${result.result})` : result.result,
             left: typeof result.result !== 'number' ? left : result.result,
-            isDisplayInput: false,
+            isDisplayUserInput: false,
             callApi: false,
             error: typeof result.result !== 'number' ? result.result : '',
+            operation: nextOperation !== 'equals' ? nextOperation : '',
           });
         },
         error => {
           this.setState({
-            isDisplayInput: false,
+            isDisplayUserInput: false,
             callApi: false,
             display: error,
             error,
@@ -167,7 +195,7 @@ class App extends Component {
         text={b.text}
         disabled={b.disabled}
         type="button"
-        onClick={b.functionButton ? this.handleOpClick : this.handleInputClick}
+        onClick={b.functionButton ? this.handleOperationClick : this.handleNumberButtonClick}
       >
         {b.text}
       </button>
@@ -180,9 +208,10 @@ class App extends Component {
         key={b.text}
         text={b.text}
         type="button"
-        onClick={b.functionButton ? this.handleOpClick : this.handleInputClick}
-        dangerouslySetInnerHTML={{ __html: b.text }}
-      />
+        onClick={b.functionButton ? this.handleOperationClick : this.handleNumberButtonClick}
+      >
+        {b.text}
+      </button>
     ));
 
     const rowThreeButtons = buttonRow3.map(b => (
@@ -192,9 +221,10 @@ class App extends Component {
         key={b.text}
         text={b.text}
         type="button"
-        onClick={b.functionButton ? this.handleOpClick : this.handleInputClick}
-        dangerouslySetInnerHTML={{ __html: b.text }}
-      />
+        onClick={b.functionButton ? this.handleOperationClick : this.handleNumberButtonClick}
+      >
+        {b.text}
+      </button>
     ));
 
     const rowFourButtons = buttonRow4.map(b => (
@@ -204,7 +234,7 @@ class App extends Component {
         key={b.text}
         text={b.text}
         type="button"
-        onClick={b.functionButton ? this.handleOpClick : this.handleInputClick}
+        onClick={b.functionButton ? this.handleOperationClick : this.handleNumberButtonClick}
       >
         {b.text}
       </button>
@@ -217,7 +247,7 @@ class App extends Component {
         key={b.text}
         text={b.text}
         type="button"
-        onClick={b.functionButton ? this.handleOpClick : this.handleInputClick}
+        onClick={b.functionButton ? this.handleOperationClick : this.handleNumberButtonClick}
       >
         {b.text}
       </button>

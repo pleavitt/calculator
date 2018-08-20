@@ -1,3 +1,4 @@
+@import "/@material/button/mdc-button";
 .bold {
   font-weight: bolder;
 }
@@ -35,10 +36,10 @@ button {
   color: white;
   min-height: 10vh;
   border: none;
-  background-color: #303248;
+  background-color: #3C3C46;
 }
 
-button:hover {
+.button:hover {
   background-color: #1e202c;
 }
 
@@ -55,7 +56,7 @@ img {
 }
 
 .lcd {
-  background-color: #6200ee;
+  background-color: #6512dc;
   color: white;
   width: 100vw;
   text-align: right;
@@ -69,5 +70,5 @@ img {
 }
 
 .number {
-  color: #ff4040
+  color: #d2b3ff
 }

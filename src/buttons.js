@@ -34,7 +34,7 @@ export const buttonRow1 = [
 
 export const buttonRow2 = [
   {
-    text: '<i>x<sup><span className="exponent">y</span></sup></i>',
+    text: 'x^y',
     id: 'power',
     cssClass: 'bold',
     functionButton: true,
@@ -67,7 +67,7 @@ export const buttonRow2 = [
 
 export const buttonRow3 = [
   {
-    text: '<sup><i>y</i></sup>√<span className="sqrt"><i>x</i></span>',
+    text: 'x√y',
     id: 'square_root',
     cssClass: 'bold',
     functionButton: true,
