@@ -19,11 +19,10 @@ This app was built for the primary purpose as a for a prospective employer.
 
 ## Known bugs
 
-- Doing operations using the result of a log operation results in unexpected behaviour.
+- Doing operations with the results of zero and one parameter operations results in unexpected behaviour
 
 ## TODO
 - Separate application into multiple components.
 - Create unit tests
 - Accept keyboard input
-- Add loading notification while wating for api response
 - Change BS to the backspace icon
