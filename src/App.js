@@ -6,6 +6,10 @@ import './App.css';
 const Display = props => (
   <div className="lcd">
     <div className="result">{props.display}</div>
+    <div className="errors">
+      {props.errors}
+      {`${props.isLoading ? 'Loading...' : ''} `}
+    </div>
   </div>
 );
 
@@ -21,7 +25,7 @@ class App extends Component {
       isDisplayUserInput: true,
       callApi: false,
       lastOperationEquals: false,
-      error: '',
+      errorMessage: '',
     };
 
     this.handleNumberButtonClick = this.handleNumberButtonClick.bind(this);
@@ -42,14 +46,14 @@ class App extends Component {
       operationButtonPressedLast,
       isDisplayUserInput,
       lastOperationEquals,
-      error,
+      errorMessage,
     } = this.state;
 
-    // if error, api result and equals pressed, clear button then clear everything
+    // if errorMessage, api result and equals pressed, clear button then clear everything
     if (
       (!isDisplayUserInput && lastOperationEquals) ||
       event.target.id === 'clear' ||
-      error !== ''
+      errorMessage !== ''
     ) {
       this.setState({
         display: 0,
@@ -60,7 +64,7 @@ class App extends Component {
         operationButtonPressedLast: false,
         isDisplayUserInput: true,
         callApi: false,
-        error: '',
+        errorMessage: '',
       });
     }
     // if last is not a decimal or button pressed is not a decimal AND its not the clear command
@@ -111,10 +115,16 @@ class App extends Component {
       display,
       operationButtonPressedLast,
       isDisplayUserInput,
-      error,
+      errorMessage,
       nextOperation,
     } = this.state;
-
+    if (event.target.id === 'pi') {
+      this.setState({
+        operation: event.target.id,
+        left: null,
+        right: null,
+      });
+    }
     if (
       (event.target.id === 'log10' || event.target.id === 'ln' || event.target.id === 'pi') &&
       true
@@ -123,7 +133,7 @@ class App extends Component {
         operation: event.target.id,
         left: display > 0 ? display : 0,
         right: null,
-        callApi: error === '',
+        callApi: errorMessage === '',
       });
     } else if (!operationButtonPressedLast || (event.target.innerHTML === '=' && right !== null)) {
       if (left === null || !isDisplayUserInput) {
@@ -145,7 +155,7 @@ class App extends Component {
       }
       if (operation !== '') {
         this.setState({
-          callApi: error === '',
+          callApi: errorMessage === '',
         });
       }
     }
@@ -158,34 +168,33 @@ class App extends Component {
   }
 
   callMathApi() {
-    const { left, operation, right, nextOperation } = this.state;
+    const { left, operation, right, nextOperation, display } = this.state;
     fetch(`https://arcane-beyond-77883.herokuapp.com/${operation}?op1=${left}&op2=${right}`)
       .then(res => res.json())
       .then(
         result => {
           this.setState({
-            display:
-              typeof result.result !== 'number' ? `Api Error (${result.result})` : result.result,
+            display: typeof result.result !== 'number' ? display : result.result,
             left: typeof result.result !== 'number' ? left : result.result,
             isDisplayUserInput: false,
             callApi: false,
-            error: typeof result.result !== 'number' ? result.result : '',
+            errorMessage: typeof result.result !== 'number' ? `Api error (${result.result})` : '',
             operation: nextOperation !== 'equals' ? nextOperation : '',
           });
         },
         error => {
+          console.log(error);
           this.setState({
             isDisplayUserInput: false,
             callApi: false,
-            display: error,
-            error,
+            errorMessage: error.message,
           });
         }
       );
   }
 
   render() {
-    const { display } = this.state;
+    const { display, errorMessage, callApi } = this.state;
 
     const rowOneButtons = buttonRow1.map(b => (
       <button
@@ -256,7 +265,7 @@ class App extends Component {
     return (
       <div className="container">
         <div className="calculator">
-          <Display display={display} />
+          <Display display={display} errors={errorMessage} isLoading={callApi} />
           <div className="buttonRow">{rowOneButtons}</div>
           <div className="buttonRow">{rowTwoButtons}</div>
           <div className="buttonRow">{rowThreeButtons}</div>
