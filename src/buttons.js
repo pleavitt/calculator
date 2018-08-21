@@ -12,14 +12,14 @@ export const buttonRow1 = [
     functionButton: false,
   },
   {
-    text: 'π',
-    id: 'pi',
-    cssClass: 'bold',
-    functionButton: true,
+    text: ' ',
+    id: 'blank1',
+    functionButton: false,
+    disabled: true,
   },
-
   {
     text: '',
+    id: 'blank2',
     functionButton: false,
     disabled: true,
   },
@@ -67,7 +67,7 @@ export const buttonRow2 = [
 
 export const buttonRow3 = [
   {
-    text: 'x√y',
+    text: '√',
     id: 'square_root',
     cssClass: 'bold',
     functionButton: true,
@@ -134,8 +134,8 @@ export const buttonRow4 = [
 
 export const buttonRow5 = [
   {
-    text: 'ln',
-    id: 'ln',
+    text: 'π',
+    id: 'pi',
     cssClass: 'bold',
     functionButton: true,
   },

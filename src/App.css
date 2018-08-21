@@ -1,6 +1,10 @@
-@import "/@material/button/mdc-button";
+@import url('https://fonts.googleapis.com/css?family=Lato');
 .bold {
   font-weight: bolder;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
 }
 
 .container {
@@ -31,6 +35,7 @@
 }
 
 button {
+  cursor: pointer;
   width: 19vw;
   font-size: 2em;
   color: white;
@@ -58,12 +63,12 @@ button {
   color: white;
   width: 100vw;
   text-align: right;
-  padding: 10vh 0 2vh 0;
+  padding: 10vh 0 35px 0;
   max-width: 1000px;
 }
 
 .result {
-  font-size: 5em;
+  font-size: 10vw;
   padding: 0 5vw 0 0;
 }
 
@@ -76,4 +81,33 @@ button {
 
 .number {
   color: #d2b3ff
+}
+
+.result {
+  font-size: 10vw;
+}
+
+@media screen and (min-width: 1200px) {
+  .result {
+    font-size: 5em;
+  }
+}
+
+.spinner {
+  height: 24px;
+  margin-left: 70vw;
+  width: 24px;
+  animation: rotate 0.8s infinite linear;
+  border: 4px solid #d2b3ff;
+  border-right-color: transparent;
+  border-radius: 50%;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

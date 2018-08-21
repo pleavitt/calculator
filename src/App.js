@@ -8,7 +8,7 @@ const Display = props => (
     <div className="result">{props.display}</div>
     <div className="errors">
       {props.errors}
-      {`${props.isLoading ? 'Loading...' : ''} `}
+      {props.isLoading && <div className="spinner" />}
     </div>
   </div>
 );
@@ -40,6 +40,20 @@ class App extends Component {
     }
   }
 
+  wipeData() {
+    this.setState({
+      display: 0,
+      operation: '',
+      nextOperation: '',
+      left: null,
+      right: null,
+      operationButtonPressedLast: false,
+      isDisplayUserInput: true,
+      callApi: false,
+      errorMessage: '',
+    });
+  }
+
   handleNumberButtonClick(event) {
     const {
       display,
@@ -47,7 +61,12 @@ class App extends Component {
       isDisplayUserInput,
       lastOperationEquals,
       errorMessage,
+      callApi,
     } = this.state;
+
+    if (callApi) {
+      return;
+    }
 
     // if errorMessage, api result and equals pressed, clear button then clear everything
     if (
@@ -55,20 +74,15 @@ class App extends Component {
       event.target.id === 'clear' ||
       errorMessage !== ''
     ) {
-      this.setState({
-        display: 0,
-        operation: '',
-        nextOperation: '',
-        left: null,
-        right: null,
-        operationButtonPressedLast: false,
-        isDisplayUserInput: true,
-        callApi: false,
-        errorMessage: '',
-      });
-    }
-    // if last is not a decimal or button pressed is not a decimal AND its not the clear command
-    if (
+      console.log('wipe now');
+      this.wipeData();
+      if (!isDisplayUserInput && lastOperationEquals) {
+        this.setState({
+          display: event.target.innerHTML,
+        });
+      }
+      // if last is not a decimal or button pressed is not a decimal AND its not the clear command
+    } else if (
       (display[display.length - 1] !== '.' || event.target.innerHTML !== '.') &&
       event.target.id !== 'clear' &&
       event.target.id !== 'backspace' &&
@@ -117,18 +131,21 @@ class App extends Component {
       isDisplayUserInput,
       errorMessage,
       nextOperation,
+      callApi,
     } = this.state;
+
+    if (callApi) {
+      return;
+    }
+
     if (event.target.id === 'pi') {
       this.setState({
+        callApi: true,
         operation: event.target.id,
         left: null,
         right: null,
       });
-    }
-    if (
-      (event.target.id === 'log10' || event.target.id === 'ln' || event.target.id === 'pi') &&
-      true
-    ) {
+    } else if (event.target.id === 'log10' || event.target.id === 'square_root') {
       this.setState({
         operation: event.target.id,
         left: display > 0 ? display : 0,
@@ -161,32 +178,39 @@ class App extends Component {
     }
 
     this.setState({
-      operationButtonPressedLast: !event.target.innerHTML.includes('='),
+      operationButtonPressedLast: !['=', 'log', '√'].includes(event.target.innerHTML),
       nextOperation: operation !== '' ? event.target.id : nextOperation,
-      lastOperationEquals: event.target.innerHTML === '=',
+      lastOperationEquals: ['=', 'log', '√'].includes(event.target.innerHTML),
     });
   }
 
   callMathApi() {
-    const { left, operation, right, nextOperation, display } = this.state;
+    const { left, operation, right, nextOperation } = this.state;
+    console.log('fetching now');
     fetch(`https://arcane-beyond-77883.herokuapp.com/${operation}?op1=${left}&op2=${right}`)
       .then(res => res.json())
       .then(
         result => {
-          this.setState({
-            display: typeof result.result !== 'number' ? display : result.result,
-            left: typeof result.result !== 'number' ? left : result.result,
-            isDisplayUserInput: false,
-            callApi: false,
-            errorMessage: typeof result.result !== 'number' ? `Api error (${result.result})` : '',
-            operation: nextOperation !== 'equals' ? nextOperation : '',
-          });
+          if (typeof result.result === 'number') {
+            this.setState({
+              display: result.result,
+              left: result.result,
+              isDisplayUserInput: false,
+              callApi: false,
+              operation: nextOperation !== 'equals' ? nextOperation : '',
+              nextOperation: '',
+            });
+          } else {
+            this.wipeData();
+            this.setState({
+              errorMessage: `Api error (${result.result})`,
+              operation: nextOperation !== 'equals' ? nextOperation : '',
+            });
+          }
         },
         error => {
-          console.log(error);
+          this.wipeData();
           this.setState({
-            isDisplayUserInput: false,
-            callApi: false,
             errorMessage: error.message,
           });
         }
