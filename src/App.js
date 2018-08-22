@@ -4,6 +4,7 @@ import { buttonRow1, buttonRow2, buttonRow3, buttonRow4, buttonRow5 } from './bu
 import './App.css';
 
 const Display = props => (
+  // const {display, errors, isLoading} = props;
   <div className="lcd">
     <div className="result">{props.display}</div>
     <div className="errors">
@@ -19,9 +20,8 @@ class App extends Component {
     this.state = {
       display: 0,
       operation: '',
-      left: null,
-      right: null,
-      operationButtonPressedLast: false,
+      left: 0,
+      right: 0,
       isDisplayUserInput: true,
       callApi: false,
       lastOperationEquals: false,
@@ -45,9 +45,8 @@ class App extends Component {
       display: 0,
       operation: '',
       nextOperation: '',
-      left: null,
-      right: null,
-      operationButtonPressedLast: false,
+      left: 0,
+      right: 0,
       isDisplayUserInput: true,
       callApi: false,
       errorMessage: '',
@@ -55,14 +54,7 @@ class App extends Component {
   }
 
   handleNumberButtonClick(event) {
-    const {
-      display,
-      operationButtonPressedLast,
-      isDisplayUserInput,
-      lastOperationEquals,
-      errorMessage,
-      callApi,
-    } = this.state;
+    const { display, isDisplayUserInput, lastOperationEquals, errorMessage, callApi } = this.state;
 
     if (callApi) {
       return;
@@ -90,10 +82,9 @@ class App extends Component {
     ) {
       this.setState({
         display:
-          (display > 0 || display[display.length - 1] === '.') && !operationButtonPressedLast
+          (display > 0 || display[display.length - 1] === '.') && typeof display === 'string'
             ? display + event.target.innerHTML
             : event.target.innerHTML,
-        operationButtonPressedLast: false,
         isDisplayUserInput: true,
       });
     } else if (
@@ -104,17 +95,15 @@ class App extends Component {
       if (event.target.id === 'negate') {
         this.setState({
           display: display * -1,
-          operationButtonPressedLast: false,
           isDisplayUserInput: true,
         });
       } else if (
         event.target.id === 'backspace' &&
-        !operationButtonPressedLast &&
+        typeof display === 'string' &&
         isDisplayUserInput
       ) {
         this.setState({
           display: display.length === 1 ? 0 : display.slice(0, -1),
-          operationButtonPressedLast: false,
           isDisplayUserInput: true,
         });
       }
@@ -122,66 +111,62 @@ class App extends Component {
   }
 
   handleOperationClick(event) {
-    const {
-      operation,
-      left,
-      right,
-      display,
-      operationButtonPressedLast,
-      isDisplayUserInput,
-      errorMessage,
-      nextOperation,
-      callApi,
-    } = this.state;
+    const { operation, left, right, display, isDisplayUserInput, callApi } = this.state;
 
+    const buttonDisplay = event.target.innerHTML;
+    const buttonCommand = event.target.id;
+
+    // If api call has not returned, ignore
     if (callApi) {
       return;
     }
 
-    if (event.target.id === 'pi') {
+    if (buttonCommand === 'pi') {
       this.setState({
         callApi: true,
         operation: event.target.id,
         left: null,
         right: null,
       });
-    } else if (event.target.id === 'log10' || event.target.id === 'square_root') {
+    } else if (buttonCommand === 'log10' || buttonCommand === 'square_root') {
+      // If the display is a number use it as a parameter, else use what is already in left
       this.setState({
-        operation: event.target.id,
-        left: display > 0 ? display : 0,
-        right: null,
-        callApi: errorMessage === '',
+        left: isNaN(display) ? left : display,
+        operation: buttonCommand,
+        callApi: true,
       });
-    } else if (!operationButtonPressedLast || (event.target.innerHTML === '=' && right !== null)) {
-      if (left === null || !isDisplayUserInput) {
-        this.setState({
-          left: display,
-          callApi: false,
-        });
-      } else if (!operationButtonPressedLast) {
-        this.setState({
-          right: display,
-        });
-      }
-
-      if (event.target.innerHTML !== '=') {
-        this.setState({
-          operation: operation === '' ? event.target.id : operation,
-          display: event.target.innerHTML,
-        });
-      }
+    } else if (buttonCommand === 'equals') {
       if (operation !== '') {
         this.setState({
-          callApi: errorMessage === '',
+          display: buttonDisplay,
+          callApi: true,
+          right: isNaN(display) ? right : display,
         });
       }
-    }
+    } else if (isDisplayUserInput) {
+      // 2 parameter operation was pressed after digits pressed
+      if (operation === '') {
+        console.log('empty op && isDisplayUserInput');
+        this.setState({
+          left: display,
+          operation: buttonCommand,
+          callApi: false,
+          display: buttonDisplay,
+        });
+      } else {
+        console.log('not empty op && isDisplayUserInput');
 
-    this.setState({
-      operationButtonPressedLast: !['=', 'log', '√'].includes(event.target.innerHTML),
-      nextOperation: operation !== '' ? event.target.id : nextOperation,
-      lastOperationEquals: ['=', 'log', '√'].includes(event.target.innerHTML),
-    });
+        this.setState({
+          right: display,
+          callApi: true,
+          nextOperation: buttonCommand,
+        });
+      }
+    } else
+      this.setState({
+        left: isNaN(display) ? left : display,
+        operation: buttonCommand,
+      });
   }
 
   callMathApi() {
@@ -195,6 +180,7 @@ class App extends Component {
             this.setState({
               display: result.result,
               left: result.result,
+              right: 0,
               isDisplayUserInput: false,
               callApi: false,
               operation: nextOperation !== 'equals' ? nextOperation : '',
