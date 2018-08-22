@@ -61,11 +61,7 @@ class App extends Component {
     }
 
     // if errorMessage, api result and equals pressed, clear button then clear everything
-    if (
-      (!isDisplayUserInput && lastOperationEquals) ||
-      event.target.id === 'clear' ||
-      errorMessage !== ''
-    ) {
+    if ((!isDisplayUserInput && lastOperationEquals) || event.target.id === 'clear') {
       console.log('wipe now');
       this.wipeData();
       if (!isDisplayUserInput && lastOperationEquals) {
@@ -78,8 +74,10 @@ class App extends Component {
       (display[display.length - 1] !== '.' || event.target.innerHTML !== '.') &&
       event.target.id !== 'clear' &&
       event.target.id !== 'backspace' &&
-      event.target.id !== 'negate'
+      event.target.id !== 'negate' &&
+      !(display.length > 15)
     ) {
+      console.log(display.length);
       this.setState({
         display:
           (display > 0 || display[display.length - 1] === '.') && typeof display === 'string'
@@ -127,6 +125,7 @@ class App extends Component {
         operation: event.target.id,
         left: null,
         right: null,
+        errorMessage: '',
       });
     } else if (buttonCommand === 'log10' || buttonCommand === 'square_root') {
       // If the display is a number use it as a parameter, else use what is already in left
@@ -134,12 +133,14 @@ class App extends Component {
         left: isNaN(display) ? left : display,
         operation: buttonCommand,
         callApi: true,
+        errorMessage: '',
       });
     } else if (buttonCommand === 'equals') {
       if (operation !== '') {
         this.setState({
           display: buttonDisplay,
           callApi: true,
+          errorMessage: '',
           right: isNaN(display) ? right : display,
         });
       }
@@ -161,6 +162,7 @@ class App extends Component {
           right: display,
           callApi: true,
           nextOperation: buttonCommand,
+          errorMessage: '',
         });
       }
     } else
