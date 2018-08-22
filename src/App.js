@@ -54,7 +54,7 @@ class App extends Component {
   }
 
   handleNumberButtonClick(event) {
-    const { display, isDisplayUserInput, lastOperationEquals, errorMessage, callApi } = this.state;
+    const { display, isDisplayUserInput, lastOperationEquals, callApi } = this.state;
 
     if (callApi) {
       return;
@@ -62,7 +62,6 @@ class App extends Component {
 
     // if errorMessage, api result and equals pressed, clear button then clear everything
     if ((!isDisplayUserInput && lastOperationEquals) || event.target.id === 'clear') {
-      console.log('wipe now');
       this.wipeData();
       if (!isDisplayUserInput && lastOperationEquals) {
         this.setState({
@@ -77,7 +76,6 @@ class App extends Component {
       event.target.id !== 'negate' &&
       !(display.length > 15)
     ) {
-      console.log(display.length);
       this.setState({
         display:
           (display > 0 || display[display.length - 1] === '.') && typeof display === 'string'
@@ -147,7 +145,6 @@ class App extends Component {
     } else if (isDisplayUserInput) {
       // 2 parameter operation was pressed after digits pressed
       if (operation === '') {
-        console.log('empty op && isDisplayUserInput');
         this.setState({
           left: display,
           operation: buttonCommand,
@@ -156,8 +153,6 @@ class App extends Component {
           isDisplayUserInput: false,
         });
       } else {
-        console.log('not empty op && isDisplayUserInput');
-
         this.setState({
           right: display,
           callApi: true,
@@ -174,7 +169,6 @@ class App extends Component {
 
   callMathApi() {
     const { left, operation, right, nextOperation } = this.state;
-    console.log('fetching now');
     fetch(`https://arcane-beyond-77883.herokuapp.com/${operation}?op1=${left}&op2=${right}`)
       .then(res => res.json())
       .then(
