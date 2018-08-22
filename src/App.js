@@ -152,6 +152,7 @@ class App extends Component {
           operation: buttonCommand,
           callApi: false,
           display: buttonDisplay,
+          isDisplayUserInput: false,
         });
       } else {
         console.log('not empty op && isDisplayUserInput');

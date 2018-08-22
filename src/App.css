@@ -42,13 +42,16 @@ button {
   color: white;
   min-height: 20px;
   height: 10vh;
-  ;
-  border: none;
+  border: 1px solid #303038;
   background-color: #3C3C46;
 }
 
-.button:hover {
-  background-color: #1e202c;
+button:hover {
+  background-color: #36363f;
+}
+
+button:active {
+  background-color: #2a2a31;
 }
 
 .exponent {
