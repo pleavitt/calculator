@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { buttonRow1, buttonRow2, buttonRow3, buttonRow4, buttonRow5 } from './buttons';
-
 import './App.css';
 
-const Display = props => (
-  // const {display, errors, isLoading} = props;
+const Display = ({ display, errors, isLoading }) => (
   <div className="lcd">
-    <div className="result">{props.display}</div>
+    <div className="result">{display}</div>
     <div className="errors">
-      {props.errors}
-      {props.isLoading && <div className="spinner" />}
+      {errors}
+      {isLoading && <div className="spinner" />}
     </div>
   </div>
 );
+
+Display.propTypes = {
+  display: PropTypes.string.isRequired,
+  errors: PropTypes.string.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+};
 
 class App extends Component {
   constructor(props) {
@@ -35,7 +40,7 @@ class App extends Component {
   componentDidUpdate() {
     const { operation, left, right, callApi } = this.state;
 
-    if (callApi && operation !== '') {
+    if (callApi) {
       this.callMathApi(operation, left, right);
     }
   }
@@ -56,16 +61,19 @@ class App extends Component {
   handleNumberButtonClick(event) {
     const { display, isDisplayUserInput, lastOperationEquals, callApi } = this.state;
 
+    const buttonDisplay = event.target.innerHTML;
+    const buttonCommand = event.target.id;
+
     if (callApi) {
       return;
     }
 
     // if errorMessage, api result and equals pressed, clear button then clear everything
-    if ((!isDisplayUserInput && lastOperationEquals) || event.target.id === 'clear') {
+    if ((!isDisplayUserInput && lastOperationEquals) || buttonCommand === 'clear') {
       this.wipeData();
       if (!isDisplayUserInput && lastOperationEquals) {
         this.setState({
-          display: event.target.innerHTML,
+          display: buttonDisplay,
         });
       }
       // if last is not a decimal or button pressed is not a decimal AND its not the clear command
@@ -79,22 +87,23 @@ class App extends Component {
       this.setState({
         display:
           (display > 0 || display[display.length - 1] === '.') && typeof display === 'string'
-            ? display + event.target.innerHTML
-            : event.target.innerHTML,
+            ? display + buttonDisplay
+            : buttonDisplay,
         isDisplayUserInput: true,
+        errorMessage: '',
       });
     } else if (
       (event.target.id === 'negate' || event.target.id === 'backspace') &&
       display !== 0 &&
       display[display.length - 1] !== '.'
     ) {
-      if (event.target.id === 'negate') {
+      if (buttonCommand === 'negate') {
         this.setState({
           display: display * -1,
           isDisplayUserInput: true,
         });
       } else if (
-        event.target.id === 'backspace' &&
+        buttonCommand === 'backspace' &&
         typeof display === 'string' &&
         isDisplayUserInput
       ) {
@@ -108,7 +117,6 @@ class App extends Component {
 
   handleOperationClick(event) {
     const { operation, left, right, display, isDisplayUserInput, callApi } = this.state;
-
     const buttonDisplay = event.target.innerHTML;
     const buttonCommand = event.target.id;
 
@@ -120,7 +128,7 @@ class App extends Component {
     if (buttonCommand === 'pi') {
       this.setState({
         callApi: true,
-        operation: event.target.id,
+        operation: buttonCommand,
         left: null,
         right: null,
         errorMessage: '',
@@ -164,6 +172,7 @@ class App extends Component {
       this.setState({
         left: isNaN(display) ? left : display,
         operation: buttonCommand,
+        display: buttonDisplay,
       });
   }
 
@@ -188,6 +197,7 @@ class App extends Component {
             this.setState({
               errorMessage: `Api error (${result.result})`,
               operation: nextOperation !== 'equals' ? nextOperation : '',
+              isDisplayUserInput: false,
             });
           }
         },

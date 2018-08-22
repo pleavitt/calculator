@@ -1,6 +1,6 @@
 export const buttonRow1 = [
   {
-    text: 'BS',
+    text: 'Back',
     id: 'backspace',
     cssClass: 'bold',
     functionButton: false,
@@ -25,7 +25,7 @@ export const buttonRow1 = [
   },
 
   {
-    text: '/',
+    text: '÷',
     id: 'divide',
     cssClass: 'bold',
     functionButton: true,
@@ -58,7 +58,7 @@ export const buttonRow2 = [
     functionButton: false,
   },
   {
-    text: 'x',
+    text: '×',
     id: 'multiply',
     cssClass: 'bold',
     functionButton: true,
